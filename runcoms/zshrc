@@ -11,3 +11,17 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+
+if [[ -d "$HOME/.rc.d" ]]; then
+    for file in $HOME/.rc.d/*; do
+        source $file
+    done
+fi
+
+# aliases stuff
+if [[ -d "$HOME/.aliases.d" ]]; then
+  for file in ~/.aliases.d/*; do
+    source $file
+  done
+fi
+
