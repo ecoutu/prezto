@@ -38,6 +38,13 @@ zstyle ':prezto:load' pmodule \
   'prompt'
 
 #
+# Autosuggestions
+#
+
+# Set the query found color.
+# zstyle ':prezto:module:autosuggestions:color' found ''
+
+#
 # Editor
 #
 
@@ -124,8 +131,10 @@ zstyle ':prezto:module:syntax-highlighting' highlighters \
   'main' \
   'brackets' \
   'pattern' \
+  'line' \
   'cursor' \
   'root'
+
 #
 # Set syntax highlighting styles.
 # zstyle ':prezto:module:syntax-highlighting' styles \
