@@ -1,4 +1,3 @@
-#
 # Executes commands at the start of an interactive session.
 #
 # Authors:
@@ -13,10 +12,6 @@ fi
 # Customize to your needs...
 
 unsetopt AUTO_NAME_DIRS
-
-if [[ -f ~/.eco_env ]]; then
-  source ~/.eco_env
-fi
 
 if [[ -d "$HOME/.rc.d" ]]; then
     for file in $HOME/.rc.d/*; do
