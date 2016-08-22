@@ -6,6 +6,10 @@ function prompt_swiq_precmd {
   if (( $+functions[git-info] )); then
     git-info
   fi
+
+  if (( $+functions[node-info] )); then
+    node-info
+  fi
 }
 
 function prompt_swiq_setup {
@@ -51,8 +55,12 @@ function prompt_swiq_setup {
   # Set ruby-info parameters.
   zstyle ':prezto:module:ruby:info:version' format '[%v]'
 
+  # Set node-info parameters
+  # %v - Node.js version.
+  zstyle ':prezto:module:node:info:version' format "(node:v%v)"
+
   # Define prompts.
-  PROMPT="${_prompt_swiq_colors[6]}"'($SWIQ_ENV)'"${_prompt_swiq_colors[3]}%n%f@${_prompt_swiq_colors[2]}%m%f:${_prompt_swiq_colors[5]}%~%f "'${git_info:+${(e)git_info[prompt]}}'"
+  PROMPT="${_prompt_swiq_colors[6]}"'($SWIQ_ENV)'"${_prompt_swiq_colors[3]}%n%f@${_prompt_swiq_colors[2]}%m%f:${_prompt_swiq_colors[5]}%~%f "'${git_info:+${(e)git_info[prompt]}} ${node_info[version]}'"
 $ "
   RPROMPT=''
 }
