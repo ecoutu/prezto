@@ -26,7 +26,7 @@ zstyle -s ':prezto:module:python:info:version' format 'version_format'
 # Format virtualenv.
 if [[ -n "$virtualenv_format" ]]; then
   if [[ -n "$VIRTUAL_ENV" ]]; then
-    zformat -f virtualenv_formatted "$virtualenv_format" "v:${VIRTUAL_ENV:t}"
+    zformat -f virtualenv_formatted "$virtualenv_format" "v:$(basename $(dirname ${VIRTUAL_ENV}))"
     python_info[virtualenv]="$virtualenv_formatted"
   fi
 

@@ -1,0 +1,104 @@
+KUBECTL_CONTEXT=""
+
+function prompt_wrk_precmd {
+  RETVAL=$?
+  RETVALS=( "$pipestatus[@]" )
+  # Get Git repository information.
+  if (( $+functions[git-info] )); then
+    git-info
+    if [[ "${git_info[prompt]}" != "" ]]; then
+      git_info[prompt]+=" "
+    fi
+  fi
+
+  if (( $+functions[node-info] )); then
+    node-info
+    if [[ "${node_info[version]}" != "" ]]; then
+      node_info[version]+=" "
+    fi
+  fi
+
+  if (( $+functions[ruby-info] )); then
+    ruby-info
+    if [[ "${ruby_info[version]}" != "" ]]; then
+      ruby_info[version]="(ruby:${ruby_info[version]}) "
+    fi
+  fi
+
+  if (( $+functions[python-info] )); then
+    python-info
+    if [[ "${python_info[virtualenv]}" != "" ]]; then
+      python_info[virtualenv]="(${python_info[virtualenv]}) "
+    fi
+  fi
+
+  KUBECTL_CONTEXT=()#"(k8s:$(kubectl config current-context | tr -d '\n'))"
+}
+
+function prompt_wrk_setup {
+
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent sp subst)
+
+  # Load required functions.
+  autoload -Uz add-zsh-hook
+
+  # Add hook to set up prompt parameters before each command.
+  add-zsh-hook precmd prompt_wrk_precmd
+
+  # Use extended color pallete if available.
+  if [[ $TERM = *256color* || $TERM = *rxvt* ]]; then
+    _prompt_wrk_colors=(
+      "%F{81}"  # Turquoise
+      "%F{166}" # Orange
+      "%F{135}" # Purple
+      "%F{161}" # Hotpink
+      "%F{118}" # Limegreen
+    )
+  else
+    _prompt_wrk_colors=(
+      "%F{cyan}"
+      "%F{yellow}"
+      "%F{magenta}"
+      "%F{red}"
+      "%F{green}"
+      "%F{blue}"
+    )
+  fi
+
+  # Set git-info parameters.
+  zstyle ':prezto:module:git:info' verbose 'yes'
+  zstyle ':prezto:module:git:info:branch' format "${_prompt_wrk_colors[1]}%b%f"
+  zstyle ':prezto:module:git:info:added' format "${_prompt_wrk_colors[5]}Δ%f"
+  zstyle ':prezto:module:git:info:deleted' format "${_prompt_wrk_colors[2]}Δ%f"
+  zstyle ':prezto:module:git:info:modified' format "${_prompt_wrk_colors[4]}Δ%f"
+  zstyle ':prezto:module:git:info:untracked' format "${_prompt_wrk_colors[3]}Δ%f"
+  zstyle ':prezto:module:git:info:keys' format 'prompt' '(%b%d%a%m)'
+  zstyle ':prezto:module:ruby:info:version' format 'ruby:%v'
+  zstyle ':prezto:module:python:info:virtualenv' format 'virtualenv:%v'
+
+  # Set ruby-info parameters.
+  zstyle ':prezto:module:ruby:info:version' format '[%v]'
+
+  # Set node-info parameters
+  # %v - Node.js version.
+  zstyle ':prezto:module:node:info:version' format "(node:v%v)"
+
+  RPROMPT_PREFIX='%{'$'\e[1A''%}' # one line up
+  RPROMPT_SUFFIX='%{'$'\e[1B''%}' # one line down
+
+  # Define prompts.
+  PROMPT="${_prompt_wrk_colors[5]}%~%f "
+  PROMPT+='(${RETVAL}) '
+  PROMPT+="$ "
+
+  RPROMPT='${git_info:+${(e)git_info[prompt]}}'
+#  RPROMPT+='${_prompt_wrk_colors[4]}(WRK_ENV:${WRK_ENV}) '
+  RPROMPT+='${_prompt_wrk_colors[3]}${node_info[version]}'
+  RPROMPT+='${_prompt_wrk_colors[2]}${ruby_info[version]}'
+  RPROMPT+='${_prompt_wrk_colors[2]}${python_info[virtualenv]}'
+#  RPROMPT+='${_prompt_wrk_colors[1]}${KUBECTL_CONTEXT}'
+}
+
+prompt_wrk_setup "$@"
