@@ -1,0 +1,75 @@
+function prompt_cs_precmd {
+  RETVAL=$?
+  RETVALS=( "$pipestatus[@]" )
+  # Get Git repository information.
+  if (( $+functions[git-info] )); then
+    git-info
+  fi
+
+  if (( $+functions[node-info] )); then
+    node-info
+  fi
+
+  if (( $+functions[ruby-info] )); then
+    ruby-info
+  fi
+}
+
+function prompt_cs_setup {
+
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent sp subst)
+
+  # Load required functions.
+  autoload -Uz add-zsh-hook
+
+  # Add hook to set up prompt parameters before each command.
+  add-zsh-hook precmd prompt_cs_precmd
+
+  # Use extended color pallete if available.
+  if [[ $TERM = *256color* || $TERM = *rxvt* ]]; then
+    _prompt_cs_colors=(
+      "%F{81}"  # Turquoise
+      "%F{166}" # Orange
+      "%F{135}" # Purple
+      "%F{161}" # Hotpink
+      "%F{118}" # Limegreen
+    )
+  else
+    _prompt_cs_colors=(
+      "%F{cyan}"
+      "%F{yellow}"
+      "%F{magenta}"
+      "%F{red}"
+      "%F{green}"
+      "%F{blue}"
+    )
+  fi
+
+  # Set git-info parameters.
+  zstyle ':prezto:module:git:info' verbose 'yes'
+  zstyle ':prezto:module:git:info:branch' format "${_prompt_cs_colors[1]}%b%f"
+  zstyle ':prezto:module:git:info:added' format "${_prompt_cs_colors[5]}Δ%f"
+  zstyle ':prezto:module:git:info:deleted' format "${_prompt_cs_colors[2]}Δ%f"
+  zstyle ':prezto:module:git:info:modified' format "${_prompt_cs_colors[4]}Δ%f"
+  zstyle ':prezto:module:git:info:untracked' format "${_prompt_cs_colors[3]}Δ%f"
+  zstyle ':prezto:module:git:info:keys' format 'prompt' '(%b%d%a%m)'
+  zstyle ':prezto:module:ruby:info:version' format 'version:%v'
+
+  # Set ruby-info parameters.
+  zstyle ':prezto:module:ruby:info:version' format '[%v]'
+
+  # Set node-info parameters
+  # %v - Node.js version.
+  zstyle ':prezto:module:node:info:version' format "(node:v%v)"
+
+  RPROMPT_PREFIX='%{'$'\e[1A''%}' # one line up
+  RPROMPT_SUFFIX='%{'$'\e[1B''%}' # one line down
+
+  # Define prompts.
+  PROMPT="${_prompt_cs_colors[6]}"'($CS_ENV)'"${_prompt_cs_colors[3]}%n%f@${_prompt_cs_colors[2]}%m%f:${_prompt_cs_colors[5]}%~%f "'${git_info:+${(e)git_info[prompt]}} ${node_info[version]} $ruby_info[version]'$'\n'"$ "
+  RPROMPT='${RPROMPT_PREFIX}${RETVAL}${RPROMPT_SUFFIX}'
+}
+
+prompt_cs_setup "$@"

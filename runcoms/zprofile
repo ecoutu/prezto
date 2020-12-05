@@ -6,6 +6,19 @@
 #
 
 #
+# Local customizations (system dependant)
+#
+
+if [[ -f ~/.eco_env_common.zsh ]]; then
+  source ~/.eco_env_common.zsh
+fi
+
+if [[ -f ~/.eco_env.zsh ]]; then
+  source ~/.eco_env.zsh
+fi
+
+
+#
 # Browser
 #
 
@@ -17,8 +30,8 @@ fi
 # Editors
 #
 
-export EDITOR='nano'
-export VISUAL='nano'
+export EDITOR='vim'
+export VISUAL='vim'
 export PAGER='less'
 
 #
@@ -36,15 +49,18 @@ fi
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
 
-# Set the list of directories that cd searches.
-# cdpath=(
-#   $cdpath
-# )
+# Set the the list of directories that cd searches.
+cdpath=(
+  ${cdpath[@]}
+  ${ECO_ROOT}
+  ${AIR_ROOT}
+)
 
 # Set the list of directories that Zsh searches for programs.
 path=(
+  ${HOME}/{.local/bin,bin}
   /usr/local/{bin,sbin}
-  $path
+  ${path[@]}
 )
 
 #
