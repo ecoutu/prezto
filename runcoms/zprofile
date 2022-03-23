@@ -59,7 +59,7 @@ typeset -gU cdpath fpath mailpath path
 cdpath=(
   ${cdpath[@]}
   ${ECO_ROOT}
-  ${ACN_ROOT}
+  ${EMPLOYER_ROOT}
 )
 
 # Set the list of directories that Zsh searches for programs.
