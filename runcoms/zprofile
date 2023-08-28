@@ -64,7 +64,8 @@ cdpath=(
 
 # Set the list of directories that Zsh searches for programs.
 path=(
-  ${HOME}/.local/bin
+  ${HOME}/.local/{,s}bin
+  ${HOME}/.asdf/{bin,shims}
   ${HOME}/{,s}bin(N)
   /opt/{homebrew,local}/{,s}bin(N)
   /usr/local/{,s}bin(N)
